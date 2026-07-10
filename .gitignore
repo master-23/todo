@@ -5,3 +5,4 @@ logs/
 .DS_Store
 composer.lock
 *.log
+.phpunit.*
