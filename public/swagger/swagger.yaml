@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Task Management API
+  description: REST API for managing tasks with SOLID principles
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /api/tasks:
+    get:
+      summary: Get list of tasks
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [due_date, created_at]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Task created successfully
+
+  /api/tasks/{id}:
+    get:
+      summary: Get a specific task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+    put:
+      summary: Update a task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated successfully
+    delete:
+      summary: Delete a task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task deleted successfully
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [не выполнена, выполнена]
+        priority:
+          type: string
+          enum: [низкий, средний, высокий]
+        category:
+          type: string
+    TaskCreate:
+      type: object
+      required:
+        - title
+        - due_date
+        - priority
+        - category
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+        priority:
+          type: string
+          enum: [низкий, средний, высокий]
+        category:
+          type: string
+        status:
+          type: string
+          enum: [не выполнена, выполнена]
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+        priority:
+          type: string
+          enum: [низкий, средний, высокий]
+        status:
+          type: string
+          enum: [не выполнена, выполнена]
+        category:
+          type: string
