@@ -7,9 +7,6 @@ use App\Core\Router;
 use App\Core\Request;
 use App\Controllers\TaskController;
 
-// use App\Repositories\TaskRepository;
-// use Tests\Integration\Repository\TaskRepositoryTest;
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
