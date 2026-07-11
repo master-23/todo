@@ -17,6 +17,8 @@ namespace App\DTO;
 use DateTime;
 use App\Enums\Priority;
 use App\Enums\Status;
+use App\Exceptions\ValidationException;
+use App\Validators\TaskValidator;
 
 class TaskDTO
 {
@@ -25,22 +27,21 @@ class TaskDTO
      *
      * @param string $title Название задачи
      * @param string|null $description Описание задачи
-     * @param DateTime $dueDate Срок выполнения
-     * @param DateTime $createdAt Дата создания
-     * @param Priority $priority Приоритет
+     * @param string $dueDate Срок выполнения
+     * @param string $createdAt Дата создания
+     * @param string $priority Приоритет
      * @param string $category Категория
-     * @param Status $status Статус
+     * @param string $status Статус
      */
     public function __construct(
         public readonly string $title,
         public readonly ?string $description,
-        public readonly DateTime $dueDate,
-        public readonly DateTime $createdAt,
-        public readonly Priority $priority,
+        public readonly string $dueDate,
+        public readonly string $createdAt,
+        public readonly string $priority,
         public readonly string $category,
-        public readonly Status $status
-    ) {
-    }
+        public readonly string $status
+    ) {}
 
     /**
      * Создает DTO из массива данных
@@ -50,7 +51,7 @@ class TaskDTO
      *
      * @param array<string,string> $data Входные данные (из JSON запроса)
      * @return self Новый экземпляр TaskDTO
-     * @throws \InvalidArgumentException Если данные невалидны
+     * @throws ValidationException Если данные невалидны
      *
      * @example
      * $data = json_decode(file_get_contents('php://input'), true);
@@ -61,11 +62,11 @@ class TaskDTO
         return new self(
             title: $data['title'],
             description: $data['description'] ?? null,
-            dueDate: new DateTime($data['due_date']),
-            createdAt: new DateTime($data['created_at'] ?? 'now'),
-            priority: Priority::from($data['priority']),
+            dueDate: $data['due_date'],
+            createdAt: $data['created_at'] ?? 'now',
+            priority: $data['priority'],
             category: $data['category'],
-            status: Status::from($data['status'] ?? 'не выполнена')
+            status: $data['status'] ?? 'не выполнена'
         );
     }
 }

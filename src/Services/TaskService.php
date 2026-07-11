@@ -21,6 +21,7 @@ use App\Exceptions\TaskNotFoundException;
 use App\Exceptions\ValidationException;
 use App\Repositories\TaskRepository;
 use App\Validators\TaskValidator;
+use DateTime;
 
 class TaskService implements ServiceInterface
 {
@@ -66,22 +67,22 @@ class TaskService implements ServiceInterface
         $this->validator->validate([
             'title' => $dto->title,
             'description' => $dto->description,
-            'due_date' => $dto->dueDate->format('Y-m-d H:i:s'),
-            'priority' => $dto->priority->value,
+            'due_date' => $dto->dueDate,
+            'priority' => $dto->priority,
             'category' => $dto->category,
-            'status' => $dto->status->value
+            'status' => $dto->status
         ]);
 
         // Создание сущности
         $task = new Task(
             $dto->title,
-            $dto->dueDate,
-            $dto->priority,
+            new DateTime($dto->dueDate),
+            Priority::from($dto->priority),
             $dto->category,
             $dto->description,
-            $dto->status,
+            Status::from($dto->status),
             null,
-            $dto->createdAt
+            new DateTime($dto->dueDate)
         );
 
         // Сохранение в базу данных
